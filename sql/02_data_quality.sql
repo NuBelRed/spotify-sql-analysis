@@ -1,13 +1,16 @@
 -- ============================================
--- 1. ROW COUNT
+-- SPOTIFY MUSIC ANALYSIS
+-- 02 - DATA QUALITY
 -- ============================================
+
+
+-- 1. ROW COUNT
 
 SELECT COUNT(*) AS total_rows
 FROM spotify_data;
 
--- ============================================
+
 -- 2. MISSING VALUES
--- ============================================
 
 SELECT
     COUNT(*) FILTER (WHERE track_id IS NULL) AS missing_track_id,
@@ -19,9 +22,8 @@ SELECT
     COUNT(*) FILTER (WHERE track_genre IS NULL) AS missing_genre
 FROM spotify_data;
 
--- ============================================
+
 -- 3. DUPLICATE TRACKS
--- ============================================
 
 SELECT
     track_id,
@@ -31,9 +33,8 @@ GROUP BY track_id
 HAVING COUNT(*) > 1
 ORDER BY occurrences DESC;
 
--- ============================================
+
 -- 4. INVALID POPULARITY
--- ============================================
 
 SELECT *
 FROM spotify_data
@@ -41,17 +42,14 @@ WHERE popularity < 0
    OR popularity > 100;
 
 
--- ============================================
 -- 5. INVALID DURATION
--- ============================================
 
 SELECT *
 FROM spotify_data
 WHERE duration_ms <= 0;
 
--- ============================================
+
 -- 6. INVALID AUDIO FEATURES
--- ============================================
 
 SELECT *
 FROM spotify_data
@@ -64,9 +62,7 @@ WHERE danceability < 0 OR danceability > 1
    OR valence < 0 OR valence > 1;
 
 
--- ============================================
 -- 7. GENRE OVERVIEW
--- ============================================
 
 SELECT
     COUNT(DISTINCT track_genre) AS total_genres
@@ -79,9 +75,8 @@ FROM spotify_data
 GROUP BY track_genre
 ORDER BY track_count DESC;
 
--- ============================================
+
 -- 8. ARTIST OVERVIEW
--- ============================================
 
 SELECT
     COUNT(DISTINCT artists) AS total_artists
@@ -95,9 +90,8 @@ GROUP BY artists
 ORDER BY track_count DESC
 LIMIT 20;
 
--- ============================================
+
 -- 9. BASIC STATISTICS
--- ============================================
 
 SELECT
     ROUND(AVG(popularity), 2) AS avg_popularity,
