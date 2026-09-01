@@ -100,3 +100,69 @@ SELECT
     ROUND(AVG(energy), 2) AS avg_energy,
     ROUND(AVG(valence), 2) AS avg_valence
 FROM spotify_data;
+
+
+SELECT *
+FROM spotify_data
+WHERE row_id = 65900;
+
+SELECT *
+FROM spotify_data
+WHERE track_id = '1kR4gIb7nGxHPI3D2ifs59';
+
+
+SELECT
+    COUNT(*) AS incomplete_rows
+FROM spotify_data
+WHERE artists IS NULL
+   OR album_name IS NULL
+   OR track_name IS NULL
+   OR duration_ms <= 0;
+
+
+SELECT
+    COUNT(*) AS duplicated_track_ids
+FROM (
+    SELECT track_id
+    FROM spotify_data
+    GROUP BY track_id
+    HAVING COUNT(*) > 1
+) AS duplicates;
+
+
+SELECT
+    COUNT(*) AS rows_in_duplicate_groups
+FROM spotify_data
+WHERE track_id IN (
+    SELECT track_id
+    FROM spotify_data
+    GROUP BY track_id
+    HAVING COUNT(*) > 1
+);
+
+
+SELECT
+    track_id,
+    artists,
+    track_name,
+    COUNT(*) AS occurrences
+FROM spotify_data
+GROUP BY
+    track_id,
+    artists,
+    track_name
+HAVING COUNT(*) > 1
+ORDER BY occurrences DESC
+LIMIT 20;
+
+
+SELECT
+    COUNT(*) AS invalid_audio_rows
+FROM spotify_data
+WHERE danceability < 0 OR danceability > 1
+   OR energy < 0 OR energy > 1
+   OR speechiness < 0 OR speechiness > 1
+   OR acousticness < 0 OR acousticness > 1
+   OR instrumentalness < 0 OR instrumentalness > 1
+   OR liveness < 0 OR liveness > 1
+   OR valence < 0 OR valence > 1;
