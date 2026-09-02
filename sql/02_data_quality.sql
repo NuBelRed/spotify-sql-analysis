@@ -166,3 +166,56 @@ WHERE danceability < 0 OR danceability > 1
    OR instrumentalness < 0 OR instrumentalness > 1
    OR liveness < 0 OR liveness > 1
    OR valence < 0 OR valence > 1;
+
+
+SELECT
+    track_id,
+    COUNT(*) AS occurrences
+FROM spotify_data
+GROUP BY track_id
+HAVING COUNT(*) > 1
+ORDER BY occurrences DESC
+LIMIT 10;
+
+SELECT
+    row_id,
+    track_id,
+    artists,
+    album_name,
+    track_name,
+    track_genre,
+    popularity
+FROM spotify_data
+WHERE track_id = '6S3JlDAGk3uu3NtZbPnuhS'
+ORDER BY track_genre;
+
+-- ============================================
+-- 10. REMOVE INCOMPLETE RECORD
+-- ============================================
+
+DELETE FROM spotify_data
+WHERE row_id = 65900;
+
+SELECT COUNT(*) AS remaining_rows
+FROM spotify_data;
+
+
+SELECT
+    COUNT(*) AS total_rows,
+    COUNT(DISTINCT track_id) AS unique_tracks,
+    COUNT(DISTINCT artists) AS unique_artists,
+    COUNT(DISTINCT album_name) AS unique_albums,
+    COUNT(DISTINCT track_genre) AS unique_genres
+FROM spotify_data;
+
+
+-- DATA QUALITY SUMMARY
+--
+-- Total records after cleaning: 113,999
+-- Missing artist/album/track information: 0
+-- Invalid duration records: 0
+-- Invalid audio-feature records: 0
+-- Duplicate track IDs: 16,641
+--
+-- Duplicate track IDs were retained because the same track
+-- can appear under multiple genre records in the dataset.
