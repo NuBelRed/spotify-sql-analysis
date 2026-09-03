@@ -92,3 +92,48 @@ SELECT
 FROM spotify_data
 GROUP BY track_genre
 ORDER BY avg_danceability DESC;
+
+-- --------------------------------------------
+-- 7. Highest-Energy Genres
+-- --------------------------------------------
+
+SELECT
+    track_genre,
+    ROUND(AVG(energy), 3) AS avg_energy,
+    ROUND(AVG(danceability), 3) AS avg_danceability,
+    ROUND(AVG(valence), 3) AS avg_valence
+FROM spotify_data
+GROUP BY track_genre
+ORDER BY avg_energy DESC
+LIMIT 15;
+
+-- --------------------------------------------
+-- 8. Most Acoustic Genres
+-- --------------------------------------------
+
+SELECT
+    track_genre,
+    ROUND(AVG(acousticness), 3) AS avg_acousticness,
+    ROUND(AVG(energy), 3) AS avg_energy,
+    ROUND(AVG(danceability), 3) AS avg_danceability,
+    ROUND(AVG(valence), 3) AS avg_valence
+FROM spotify_data
+GROUP BY track_genre
+ORDER BY avg_acousticness DESC
+LIMIT 15;
+
+
+-- --------------------------------------------
+-- 9. Most Instrumental Genres
+-- --------------------------------------------
+
+SELECT
+    track_genre,
+    ROUND(AVG(instrumentalness), 3) AS avg_instrumentalness,
+    ROUND(AVG(energy), 3) AS avg_energy,
+    ROUND(AVG(danceability), 3) AS avg_danceability,
+    ROUND(AVG(acousticness), 3) AS avg_acousticness
+FROM spotify_data
+GROUP BY track_genre
+ORDER BY avg_instrumentalness DESC
+LIMIT 15;
