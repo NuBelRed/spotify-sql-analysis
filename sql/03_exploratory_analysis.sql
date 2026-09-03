@@ -137,3 +137,31 @@ FROM spotify_data
 GROUP BY track_genre
 ORDER BY avg_instrumentalness DESC
 LIMIT 15;
+
+-- --------------------------------------------
+-- 10. Audio Characteristics by Popularity
+-- --------------------------------------------
+
+SELECT
+    CASE
+        WHEN popularity >= 70 THEN 'High Popularity'
+        WHEN popularity >= 40 THEN 'Medium Popularity'
+        ELSE 'Low Popularity'
+    END AS popularity_group,
+    COUNT(*) AS track_count,
+    ROUND(AVG(popularity), 2) AS avg_popularity,
+    ROUND(AVG(danceability), 3) AS avg_danceability,
+    ROUND(AVG(energy), 3) AS avg_energy,
+    ROUND(AVG(acousticness), 3) AS avg_acousticness,
+    ROUND(AVG(instrumentalness), 3) AS avg_instrumentalness,
+    ROUND(AVG(valence), 3) AS avg_valence,
+    ROUND(AVG(speechiness), 3) AS avg_speechiness,
+    ROUND(AVG(tempo), 2) AS avg_tempo
+FROM spotify_data
+GROUP BY
+    CASE
+        WHEN popularity >= 70 THEN 'High Popularity'
+        WHEN popularity >= 40 THEN 'Medium Popularity'
+        ELSE 'Low Popularity'
+    END
+ORDER BY avg_popularity DESC;
