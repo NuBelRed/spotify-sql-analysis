@@ -75,3 +75,20 @@ SELECT
     ROUND(AVG(speechiness), 3) AS avg_speechiness,
     ROUND(AVG(tempo), 2) AS avg_tempo
 FROM spotify_data;
+
+-- --------------------------------------------
+-- 6. Audio Characteristics by Genre
+-- --------------------------------------------
+
+SELECT
+    track_genre,
+    ROUND(AVG(danceability), 3) AS avg_danceability,
+    ROUND(AVG(energy), 3) AS avg_energy,
+    ROUND(AVG(acousticness), 3) AS avg_acousticness,
+    ROUND(AVG(instrumentalness), 3) AS avg_instrumentalness,
+    ROUND(AVG(valence), 3) AS avg_valence,
+    ROUND(AVG(speechiness), 3) AS avg_speechiness,
+    ROUND(AVG(tempo), 2) AS avg_tempo
+FROM spotify_data
+GROUP BY track_genre
+ORDER BY avg_danceability DESC;
