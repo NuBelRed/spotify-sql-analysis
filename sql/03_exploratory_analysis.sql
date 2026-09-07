@@ -165,3 +165,34 @@ GROUP BY
         ELSE 'Low Popularity'
     END
 ORDER BY avg_popularity DESC;
+
+-- --------------------------------------------
+-- 11. Popularity Correlation Analysis
+-- --------------------------------------------
+
+SELECT
+    ROUND(CORR(popularity, danceability)::numeric, 3) AS popularity_danceability,
+    ROUND(CORR(popularity, energy)::numeric, 3) AS popularity_energy,
+    ROUND(CORR(popularity, acousticness)::numeric, 3) AS popularity_acousticness,
+    ROUND(CORR(popularity, instrumentalness)::numeric, 3) AS popularity_instrumentalness,
+    ROUND(CORR(popularity, liveness)::numeric, 3) AS popularity_liveness,
+    ROUND(CORR(popularity, valence)::numeric, 3) AS popularity_valence,
+    ROUND(CORR(popularity, speechiness)::numeric, 3) AS popularity_speechiness,
+    ROUND(CORR(popularity, tempo)::numeric, 3) AS popularity_tempo
+FROM spotify_data;
+
+-- --------------------------------------------
+-- 12. Explicit vs. Non-Explicit Tracks
+-- --------------------------------------------
+
+SELECT
+    explicit,
+    COUNT(*) AS track_count,
+    ROUND(AVG(popularity), 2) AS avg_popularity,
+    ROUND(AVG(danceability), 3) AS avg_danceability,
+    ROUND(AVG(energy), 3) AS avg_energy,
+    ROUND(AVG(valence), 3) AS avg_valence,
+    ROUND(AVG(speechiness), 3) AS avg_speechiness
+FROM spotify_data
+GROUP BY explicit
+ORDER BY explicit;
