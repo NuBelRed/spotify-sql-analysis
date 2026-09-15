@@ -391,3 +391,47 @@ SELECT
 FROM artist_stats
 ORDER BY consistency_score DESC
 LIMIT 20;
+
+-- ============================================
+-- ADVANCED ANALYSIS SUMMARY
+-- ============================================
+--
+-- Ranking:
+-- - Ranked 114 genres by average popularity using
+--   the RANK() window function.
+-- - Ranked artists within each genre using
+--   PARTITION BY and RANK().
+--
+-- Benchmarking:
+-- - Compared genre popularity against the overall
+--   dataset average of 33.24.
+-- - Identified tracks that significantly outperform
+--   their assigned genre's average popularity.
+--
+-- Artist Performance:
+-- - Bad Bunny had the strongest genre-adjusted
+--   performance among artists with at least 5 tracks.
+-- - Artist catalog analysis showed that high average
+--   popularity does not always mean high consistency.
+--
+-- Statistical Analysis:
+-- - Used median genre popularity as an alternative
+--   benchmark to reduce sensitivity to extreme values.
+-- - Used standard deviation to measure variation in
+--   artist track popularity.
+--
+-- Consistency:
+-- - Created a consistency score combining average
+--   popularity and popularity variability.
+-- - Bad Bunny ranked highest with a score of 81.09,
+--   combining high average popularity with relatively
+--   low variation across 22 tracks.
+--
+-- Key Takeaway:
+-- - Advanced analysis shows that artist and genre
+--   performance can vary substantially depending on
+--   the benchmark and metric used. Combining popularity,
+--   catalog size, and consistency provides a more
+--   informative view of artist performance than
+--   popularity alone.
+-- ============================================
