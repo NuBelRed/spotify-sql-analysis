@@ -104,3 +104,115 @@ GROUP BY
     END
 ORDER BY
     popularity_group DESC;
+
+-- Query 4 Takeaway:
+-- - High-popularity tracks were more danceable (0.616 vs. 0.564)
+--   and slightly more energetic (0.671 vs. 0.640).
+-- - They were substantially less acoustic (0.221 vs. 0.320)
+--   and less instrumental (0.037 vs. 0.162).
+-- - High-popularity tracks also had slightly higher valence
+--   and lower speechiness and tempo.
+-- - These characteristics are associated with higher popularity
+--   in the dataset but should not be interpreted as causal factors.
+
+
+-- --------------------------------------------
+-- 5. Strongest Artist Catalogs
+-- --------------------------------------------
+
+SELECT
+    artists,
+    COUNT(DISTINCT track_id) AS track_count,
+    ROUND(AVG(popularity)::numeric, 2) AS avg_popularity,
+    MAX(popularity) AS highest_popularity,
+    ROUND(STDDEV(popularity)::numeric, 2) AS popularity_stddev
+FROM spotify_data
+WHERE artists IS NOT NULL
+GROUP BY artists
+HAVING COUNT(DISTINCT track_id) >= 10
+ORDER BY avg_popularity DESC
+LIMIT 20;
+
+-- Query 5 Takeaway:
+-- - Bad Bunny had the highest average popularity (87.08)
+--   among artists with at least 10 unique tracks.
+-- - Stray Kids and The 1975 combined relatively high average
+--   popularity with low variation across their catalogs.
+-- - BLACKPINK had the largest catalog in the top 20 (40 tracks),
+--   but showed greater variation in track popularity.
+-- - Foo Fighters and Tom Odell had relatively high popularity
+--   variability, showing that catalog size and average popularity
+--   do not necessarily indicate consistent performance.
+-- - Standard deviation provides additional context beyond
+--   average popularity when evaluating artist catalogs.
+
+-- --------------------------------------------
+-- 6. Artist Consistency Score
+-- --------------------------------------------
+
+WITH artist_stats AS (
+    SELECT
+        artists,
+        COUNT(DISTINCT track_id) AS track_count,
+        AVG(popularity) AS avg_popularity,
+        STDDEV(popularity) AS popularity_stddev
+    FROM spotify_data
+    WHERE artists IS NOT NULL
+    GROUP BY artists
+    HAVING COUNT(DISTINCT track_id) >= 10
+)
+
+SELECT
+    artists,
+    track_count,
+    ROUND(avg_popularity::numeric, 2) AS avg_popularity,
+    ROUND(popularity_stddev::numeric, 2) AS popularity_stddev,
+    ROUND(
+        (avg_popularity - popularity_stddev)::numeric,
+        2
+    ) AS consistency_score
+FROM artist_stats
+ORDER BY consistency_score DESC
+LIMIT 20;
+
+-- Query 6 Takeaway:
+-- - The consistency score combines average popularity
+--   with popularity variability.
+-- - Bad Bunny had the highest consistency score (81.09),
+--   combining an average popularity of 87.08 with a
+--   standard deviation of 5.99 across 22 tracks.
+-- - Stray Kids and The 1975 also combined relatively high
+--   average popularity with low variation.
+-- - BTS demonstrated that a large catalog can maintain
+--   relatively consistent popularity, with 143 tracks
+--   and a standard deviation of 6.19.
+-- - The consistency score is a derived metric created for
+--   this analysis and should be interpreted as a comparative
+--   measure rather than an official Spotify metric.
+
+-- --------------------------------------------
+-- 7. Artist Genre Diversity
+-- --------------------------------------------
+
+SELECT
+    artists,
+    COUNT(DISTINCT track_id) AS track_count,
+    COUNT(DISTINCT track_genre) AS genre_count,
+    ROUND(AVG(popularity)::numeric, 2) AS avg_popularity
+FROM spotify_data
+WHERE artists IS NOT NULL
+GROUP BY artists
+HAVING COUNT(DISTINCT track_id) >= 10
+ORDER BY genre_count DESC, avg_popularity DESC
+LIMIT 20;
+
+-- Query 7 Takeaway:
+-- - Some artists appear across multiple genre categories
+--   in the dataset.
+-- - Badfinger had the highest genre-label count among the
+--   artists shown, appearing across 9 genre categories.
+-- - Genre-label diversity did not consistently correspond
+--   with higher average popularity.
+-- - Because tracks can appear under multiple genre labels,
+--   genre_count should be interpreted as dataset category
+--   diversity rather than a direct measure of musical diversity.
