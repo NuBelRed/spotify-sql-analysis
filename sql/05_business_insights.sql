@@ -216,3 +216,147 @@ LIMIT 20;
 -- - Because tracks can appear under multiple genre labels,
 --   genre_count should be interpreted as dataset category
 --   diversity rather than a direct measure of musical diversity.
+
+-- --------------------------------------------
+-- 8. Catalog Size vs. Average Popularity
+-- --------------------------------------------
+
+WITH artist_stats AS (
+    SELECT
+        artists,
+        COUNT(DISTINCT track_id) AS track_count,
+        AVG(popularity) AS avg_popularity
+    FROM spotify_data
+    WHERE artists IS NOT NULL
+    GROUP BY artists
+)
+
+SELECT
+    CASE
+        WHEN track_count BETWEEN 1 AND 4 THEN '1-4 Tracks'
+        WHEN track_count BETWEEN 5 AND 9 THEN '5-9 Tracks'
+        WHEN track_count BETWEEN 10 AND 19 THEN '10-19 Tracks'
+        WHEN track_count BETWEEN 20 AND 49 THEN '20-49 Tracks'
+        ELSE '50+ Tracks'
+    END AS catalog_size,
+    COUNT(*) AS artist_count,
+    ROUND(AVG(avg_popularity)::numeric, 2) AS avg_artist_popularity
+FROM artist_stats
+GROUP BY
+    CASE
+        WHEN track_count BETWEEN 1 AND 4 THEN '1-4 Tracks'
+        WHEN track_count BETWEEN 5 AND 9 THEN '5-9 Tracks'
+        WHEN track_count BETWEEN 10 AND 19 THEN '10-19 Tracks'
+        WHEN track_count BETWEEN 20 AND 49 THEN '20-49 Tracks'
+        ELSE '50+ Tracks'
+    END
+ORDER BY
+    MIN(track_count);
+
+-- Query 8 Takeaway:
+-- - Artists with smaller catalogs had higher average popularity
+--   in this dataset.
+-- - Artists with 1-4 tracks had the highest average popularity
+--   (37.24), while artists with 50+ tracks had the lowest
+--   average popularity (26.73).
+-- - The 5-9, 10-19, and 20-49 track groups had average
+--   popularity between 30.41 and 32.08.
+-- - The catalog-size groups were highly uneven, with 27,564
+--   artists in the 1-4 track group compared with only 93
+--   artists in the 50+ track group.
+-- - This relationship should be interpreted as an association
+--   within the dataset rather than evidence that larger catalogs
+--   cause lower popularity.
+
+
+-- --------------------------------------------
+-- 9. Artist Popularity Consistency by Catalog Size
+-- --------------------------------------------
+
+WITH artist_stats AS (
+    SELECT
+        artists,
+        COUNT(DISTINCT track_id) AS track_count,
+        AVG(popularity) AS avg_popularity,
+        STDDEV(popularity) AS popularity_stddev
+    FROM spotify_data
+    WHERE artists IS NOT NULL
+    GROUP BY artists
+)
+
+SELECT
+    CASE
+        WHEN track_count BETWEEN 1 AND 4 THEN '1-4 Tracks'
+        WHEN track_count BETWEEN 5 AND 9 THEN '5-9 Tracks'
+        WHEN track_count BETWEEN 10 AND 19 THEN '10-19 Tracks'
+        WHEN track_count BETWEEN 20 AND 49 THEN '20-49 Tracks'
+        ELSE '50+ Tracks'
+    END AS catalog_size,
+    COUNT(*) AS artist_count,
+    ROUND(AVG(avg_popularity)::numeric, 2) AS avg_popularity,
+    ROUND(AVG(popularity_stddev)::numeric, 2) AS avg_popularity_stddev
+FROM artist_stats
+WHERE popularity_stddev IS NOT NULL
+GROUP BY
+    CASE
+        WHEN track_count BETWEEN 1 AND 4 THEN '1-4 Tracks'
+        WHEN track_count BETWEEN 5 AND 9 THEN '5-9 Tracks'
+        WHEN track_count BETWEEN 10 AND 19 THEN '10-19 Tracks'
+        WHEN track_count BETWEEN 20 AND 49 THEN '20-49 Tracks'
+        ELSE '50+ Tracks'
+    END
+ORDER BY
+    MIN(track_count);
+
+-- Query 9 Takeaway:
+-- - Artists with 1-4 tracks had the highest average popularity
+--   (37.63) and the lowest average popularity variability (4.20).
+-- - Average popularity generally decreased as catalog size increased.
+-- - Popularity variability increased substantially from 4.20 for
+--   artists with 1-4 tracks to 10.19 for artists with 50+ tracks.
+-- - The relationship was not perfectly linear, as the 20-49 track
+--   group had slightly higher average popularity than the 10-19
+--   track group.
+-- - Larger artist catalogs in this dataset tended to have lower
+--   average popularity and greater variation across tracks.
+-- - These results describe an association within the dataset and
+--   should not be interpreted as evidence that catalog size causes
+--   changes in popularity.
+
+-- --------------------------------------------
+-- 10. Artist High-Popularity Track Rate
+-- --------------------------------------------
+
+SELECT
+    artists,
+    COUNT(DISTINCT track_id) AS track_count,
+    COUNT(DISTINCT track_id) FILTER (
+        WHERE popularity >= 70
+    ) AS high_popularity_tracks,
+    ROUND(
+        100.0 * COUNT(DISTINCT track_id) FILTER (
+            WHERE popularity >= 70
+        ) / COUNT(DISTINCT track_id),
+        2
+    ) AS pct_high_popularity
+FROM spotify_data
+WHERE artists IS NOT NULL
+GROUP BY artists
+HAVING COUNT(DISTINCT track_id) >= 10
+ORDER BY pct_high_popularity DESC, track_count DESC
+LIMIT 20;
+
+-- Query 10 Takeaway:
+-- - Bad Bunny had the highest high-popularity track rate,
+--   with all 22 unique tracks reaching the popularity threshold.
+-- - Travis Scott and Stray Kids also had high rates, with
+--   93.33% and 86.36% of their tracks reaching the threshold.
+-- - The Neighbourhood and Radiohead had approximately 72%
+--   of their tracks reach high popularity.
+-- - BLACKPINK had the largest catalog among the top results
+--   with 40 tracks, with 50.00% reaching the threshold.
+-- - The high-popularity track rate provides a different view
+--   of artist performance than average popularity by measuring
+--   how consistently an artist's catalog reaches a defined threshold.
+-- - A minimum catalog size of 10 tracks was used to reduce the
+--   effect of artists with very small catalogs.
