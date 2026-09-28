@@ -202,52 +202,31 @@ ORDER BY explicit;
 -- ============================================
 --
 -- Dataset Overview:
--- - 113,999 records across 89,740 unique tracks,
---   31,437 artists, 46,589 albums, and 114 genres.
+-- - 113,999 records across 89,740 unique tracks, 31,437 artists, 46,589 albums, and 114 genres.
 -- - Average track popularity was 33.24/100.
 -- - Average track duration was 3.80 minutes.
 --
 -- Popularity:
--- - Pop-film had the highest average genre popularity (59.28),
---   followed by K-pop (56.95) and chill (53.65).
--- - Among artists with at least 5 tracks, Olivia Rodrigo had
---   the highest average popularity (87.40).
--- - "Un Verano Sin Ti" by Bad Bunny had the highest average
---   album popularity among albums with at least 3 tracks (89.81).
+-- - Pop-film had the highest average genre popularity (59.28), followed by K-pop (56.95) and chill (53.65).
+-- - Among artists with at least 5 tracks, Olivia Rodrigo had the highest average popularity (87.40).
+-- - "Un Verano Sin Ti" by Bad Bunny had the highest average album popularity among albums with at least 3 tracks (89.81).
 --
 -- Audio Characteristics:
--- - Average track: 0.567 danceability, 0.641 energy,
---   0.315 acousticness, 0.156 instrumentalness,
---   0.474 valence, and 122.15 BPM.
--- - Kids, Chicago house, and reggaeton were among the most
---   danceable genres.
--- - Death metal, grindcore, and metalcore had the highest
---   average energy.
--- - Classical, romance, and tango had the highest
---   average acousticness.
--- - Study, minimal techno, and sleep had the highest
---   average instrumentalness.
+-- - Average track: 0.567 danceability, 0.641 energy, 0.315 acousticness, 0.156 instrumentalness, 0.474 valence, and 122.15 BPM.
+-- - Kids, Chicago house, and reggaeton were among the most danceable genres.
+-- - Death metal, grindcore, and metalcore had the highest average energy.
+-- - Classical, romance, and tango had the highest average acousticness.
+-- - Study, minimal techno, and sleep had the highest average instrumentalness.
 --
 -- Popularity and Audio Features:
--- - High-popularity tracks were more danceable and substantially
---   less instrumental than lower-popularity tracks.
--- - Correlation analysis showed only weak relationships between
---   popularity and individual audio features.
--- - Instrumentalness had the strongest correlation with popularity
---   (-0.095), but the relationship remained weak.
--- - Energy showed almost no linear relationship with popularity
---   (0.001).
+-- - High-popularity tracks were more danceable and substantially less instrumental than lower-popularity tracks.
+-- - Correlation analysis showed only weak relationships between popularity and individual audio features.
+-- - Instrumentalness had the strongest correlation with popularity (-0.095), but the relationship remained weak.
+-- - Energy showed almost no linear relationship with popularity (0.001).
 --
 -- Explicit Content:
--- - Explicit tracks had higher average popularity (36.45 vs. 32.94),
---   danceability (0.636 vs. 0.560), energy (0.721 vs. 0.634),
---   and speechiness (0.191 vs. 0.075).
--- - Valence was nearly identical between explicit and
---   non-explicit tracks.
+-- - Explicit tracks had higher average popularity (36.45 vs. 32.94), danceability (0.636 vs. 0.560), energy (0.721 vs. 0.634), and speechiness (0.191 vs. 0.075).
+-- - Valence was nearly identical between explicit and non-explicit tracks.
 --
 -- Key Takeaway:
--- - Popularity is not strongly explained by individual audio
---   characteristics. However, popular tracks tend to be more
---   danceable and less instrumental, while genre, artist,
---   and content characteristics appear to provide additional
---   context for understanding popularity.
+-- - Popularity is not strongly explained by individual audio characteristics. However, popular tracks tend to be more danceable and less instrumental, while genre, artist, and content characteristics appear to provide additional context for understanding popularity.

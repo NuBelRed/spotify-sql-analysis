@@ -217,5 +217,4 @@ FROM spotify_data;
 -- Invalid audio-feature records: 0
 -- Duplicate track IDs: 16,641
 --
--- Duplicate track IDs were retained because the same track
--- can appear under multiple genre records in the dataset.
+-- Duplicate track IDs were retained because the same track can appear under multiple genre records in the dataset.
