@@ -315,3 +315,94 @@ LIMIT 20;
 -- - BLACKPINK had the largest catalog among the top results with 40 tracks, with 50.00% reaching the threshold.
 -- - The high-popularity track rate provides a different view of artist performance than average popularity by measuring how consistently an artist's catalog reaches a defined threshold.
 -- - A minimum catalog size of 10 tracks was used to reduce the effect of artists with very small catalogs.
+
+-- --------------------------------------------
+-- 11. Genre High-Popularity Track Rate
+-- --------------------------------------------
+
+SELECT
+    track_genre,
+    COUNT(*) AS track_count,
+    COUNT(*) FILTER (
+        WHERE popularity >= 70
+    ) AS high_popularity_tracks,
+    ROUND(
+        100.0 * COUNT(*) FILTER (
+            WHERE popularity >= 70
+        ) / COUNT(*),
+        2
+    ) AS pct_high_popularity
+FROM spotify_data
+GROUP BY track_genre
+HAVING COUNT(*) >= 500
+ORDER BY pct_high_popularity DESC
+LIMIT 20;
+
+-- Query 11 Takeaway:
+-- - Pop had the highest high-popularity track rate, with 31.70% of its tracks reaching the threshold.
+-- - Dance (24.50%), electro (24.10%), and K-pop (22.52%) also had relatively high high-popularity rates.
+-- - House (22.10%) and metal (21.70%) were also above 20% of tracks reaching high popularity.
+-- - Rock, indie, and EDM had high-popularity rates between 18.20% and 19.80%.
+-- - Hip-hop had a 13.40% high-popularity rate, showing that genre recognition does not necessarily correspond to the percentage of tracks reaching this threshold.
+-- - The similar number of tracks across genres makes high-popularity rates relatively comparable between genres in this dataset.
+
+-- --------------------------------------------
+-- 12. Genre Performance Comparison
+-- --------------------------------------------
+
+SELECT
+    track_genre,
+    COUNT(*) AS track_count,
+    ROUND(AVG(popularity)::numeric, 2) AS avg_popularity,
+    COUNT(*) FILTER (
+        WHERE popularity >= 70
+    ) AS high_popularity_tracks,
+    ROUND(
+        100.0 * COUNT(*) FILTER (
+            WHERE popularity >= 70
+        ) / COUNT(*),
+        2
+    ) AS pct_high_popularity
+FROM spotify_data
+GROUP BY track_genre
+HAVING COUNT(*) >= 500
+ORDER BY avg_popularity DESC;
+
+-- Query 12 Takeaway:
+-- - K-pop combined high average popularity (56.95) with a high-popularity rate of 22.52%.
+-- - Pop had a lower average popularity than K-pop (47.58) but the highest high-popularity rate at 31.70%.
+-- - Metal also performed strongly under both measures, with 43.71 average popularity and a 21.70% high-popularity rate.
+-- - Pop-film had the highest average popularity (59.28) but only 6.70% of its tracks reached 70+ popularity, showing that average popularity and high-popularity rate measure different aspects of performance.
+-- - Dance had a relatively low average popularity (22.69) but a high-popularity rate of 24.50%, demonstrating that a genre can have a lower overall average while still containing many highly popular tracks.
+-- - Comparing average popularity with high-popularity rate provides a more complete view of genre performance than either metric alone.
+-- - The similar number of tracks across genres makes the high-popularity rates relatively comparable within this dataset.
+
+-- ============================================
+-- BUSINESS INSIGHTS SUMMARY
+-- ============================================
+--
+-- Genre Performance:
+-- - Pop had the highest high-popularity track rate at 31.70%, while K-pop combined a high average popularity of 56.95 with a 22.52% high-popularity rate.
+-- - Comparing average popularity with high-popularity rate provides a more complete view of genre performance.
+--
+-- Popularity and Audio Characteristics:
+-- - High-popularity tracks were more danceable and energetic while being substantially less acoustic and instrumental.
+-- - These audio characteristics are associated with higher popularity in the dataset but should not be interpreted as causal factors.
+--
+-- Artist Performance:
+-- - Bad Bunny had the highest average popularity among artists with at least 10 unique tracks (87.08) and the highest consistency score (81.09).
+-- - Bad Bunny also had a 100% high-popularity track rate, with all 22 unique tracks reaching the 70+ threshold.
+-- - Artist performance varies depending on whether popularity, consistency, catalog size, or high-popularity rate is used.
+--
+-- Catalog Size:
+-- - Artists with smaller catalogs generally had higher average popularity and lower popularity variability in this dataset.
+-- - Artists with 1-4 tracks averaged 37.63 popularity compared with 26.73 for artists with 50+ tracks.
+-- - This relationship represents an association in the dataset rather than evidence that catalog size causes popularity changes.
+--
+-- Content Characteristics:
+-- - Explicit tracks had higher average popularity (36.45 vs. 32.94) and a higher percentage reaching 70+ popularity (9.06% vs. 4.40%) than non-explicit tracks.
+-- - This relationship should not be interpreted as causal because other factors may influence popularity.
+--
+-- Key Business Takeaway:
+-- - Popularity is influenced by multiple dimensions rather than a single characteristic. Combining genre performance, artist catalog metrics, high-popularity rates, and audio characteristics provides a more complete framework for analyzing music performance.
+-- ============================================
